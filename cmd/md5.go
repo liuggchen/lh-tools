@@ -15,16 +15,17 @@ import (
 // md5Cmd represents the md5 command
 var md5Cmd = &cobra.Command{
 	Use:   "md5",
-	Short: "返回输入字符串的md5值",
+	Short: "返回32位md5值",
 	Long: `
-返回输入字符串的md5值
+返回输入字符串的32位md5值
 
 默认返回小写结果
 -u 返回大写结果
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		for _, arg := range args {
-			fmt.Println(_md5(arg, cmd.Flag("upper").Value.String() == "true"))
+			u, _ := cmd.Flags().GetBool("upper")
+			fmt.Println(_md5(arg, u))
 		}
 	},
 }

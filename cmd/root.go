@@ -5,23 +5,22 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
 )
-
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "lh",
-	Short: "工作常用小工具",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "常用小工具",
+	Long: `常用小工具
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+date   格式化时间戳 如不传时区参数-z="+8"，默认时区+8，返回格式为 2021-04-16 22:09:33
+lower  返回小写字符串
+md5    计算32位md5值，默认返回小写结果，使用 -u 参数返回大写结果
+strlen 输出字符串长度
+upper  返回大写字符串
+`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -47,5 +46,3 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-
