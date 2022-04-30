@@ -6,4 +6,5 @@
 * lower 返回小写字符串
 * md5 计算32位md5值，默认返回小写结果，使用 -u 参数返回大写结果
 * strlen 输出字符串长度
+* server 指定root目录和端口开启server
 * upper 返回大写字符串

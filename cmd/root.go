@@ -13,14 +13,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "lh",
 	Short: "常用小工具",
-	Long: `常用小工具
-
-date   格式化时间戳 如不传时区参数-z="+8"，默认时区+8，返回格式为 2021-04-16 22:09:33
-lower  返回小写字符串
-md5    计算32位md5值，默认返回小写结果，使用 -u 参数返回大写结果
-strlen 输出字符串长度
-upper  返回大写字符串
-`,
+	Long:  `常用小工具`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
