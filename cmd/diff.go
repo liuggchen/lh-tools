@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/spf13/cobra"
 )
@@ -14,25 +15,29 @@ import (
 // diffCmd represents the diff command
 var diffCmd = &cobra.Command{
 	Use:   "diff [file1] [file2]",
-	Short: "比较两个文件的差集或交集",
+	Short: "比较两个文件的差集、交集或并集",
 	Long: `
-比较两个文件的差集或交集，文件按行分隔进行比较。
+比较两个文件的差集、交集或并集，文件按行分隔进行比较。
 
 默认显示在第一个文件中存在但在第二个文件中不存在的行（差集）。
 使用 --intersect 参数显示两个文件的交集。
+使用 --union 参数显示两个文件的并集，结果按内容顺序排序。
 
 示例:
   lh diff file1.txt file2.txt                    # 显示差集
   lh diff --intersect file1.txt file2.txt       # 显示交集
   lh diff -i file1.txt file2.txt                # 显示交集（简写）
+  lh diff --union file1.txt file2.txt           # 显示并集
+  lh diff -u file1.txt file2.txt                # 显示并集（简写）
 `,
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		file1 := args[0]
 		file2 := args[1]
 
-		// 获取交集标志
+		// 获取交集和并集标志
 		intersect, _ := cmd.Flags().GetBool("intersect")
+		union, _ := cmd.Flags().GetBool("union")
 
 		// 读取第一个文件的所有行
 		lines1, err := readFileLines(file1)
@@ -71,6 +76,35 @@ var diffCmd = &cobra.Command{
 				for _, line := range intersection {
 					fmt.Println(line)
 				}
+			}
+		} else if union {
+			// 计算并集：合并两个文件的所有行，去重并按内容顺序排序
+			unionMap := make(map[string]bool)
+			var unionLines []string
+
+			// 添加第一个文件的所有行
+			for _, line := range lines1 {
+				if !unionMap[line] {
+					unionMap[line] = true
+					unionLines = append(unionLines, line)
+				}
+			}
+
+			// 添加第二个文件中不重复的行
+			for _, line := range lines2 {
+				if !unionMap[line] {
+					unionMap[line] = true
+					unionLines = append(unionLines, line)
+				}
+			}
+
+			// 按内容顺序排序
+			sort.Strings(unionLines)
+
+			// 输出并集结果
+			fmt.Printf("文件 %s 和文件 %s 的并集（按内容顺序排序）:\n", file1, file2)
+			for _, line := range unionLines {
+				fmt.Println(line)
 			}
 		} else {
 			// 计算差集：找出在第一个文件中存在但在第二个文件中不存在的行，保持原始顺序
@@ -120,6 +154,8 @@ func init() {
 
 	// 添加交集标志
 	diffCmd.Flags().BoolP("intersect", "i", false, "显示两个文件的交集而不是差集")
+	// 添加并集标志
+	diffCmd.Flags().BoolP("union", "u", false, "显示两个文件的并集，按内容顺序排序")
 
 	// Here you will define your flags and configuration settings.
 
